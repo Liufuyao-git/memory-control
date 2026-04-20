@@ -1,0 +1,9 @@
+# context-slim 测试配置
+# 指向 tests/ 目录下的 mock 文件，不影响真实配置文件
+# 使用方式：python3 scripts/audit.py --config tests/config.yaml
+files:
+  - tests/mock_AGENTS.md
+  - tests/mock_MEMORY.md
+  - tests/mock_TOOLS.md
+  - tests/mock_SOUL.md
+  - tests/mock_BOOTSTRAP.md
