@@ -1,0 +1,94 @@
+{
+  "_comment": "context-slim 测试期望值。run_test.sh 对照此文件验证 audit.py 输出。",
+  "_fields_note": "redundant_sections 字段为人工核对清单，不参与自动断言；run_test.sh 只打印不判断。自动断言字段：exists / severity_expect / has_credentials / token_min / token_max / credential_lines_min / credential_lines_noise_max",
+  "_tolerance": {
+    "token_pct": 0.20,
+    "_note": "token 数允许 ±20% 误差（char÷3.5 估算精度）"
+  },
+  "files": [
+    {
+      "file": "tests/mock_AGENTS.md",
+      "exists": true,
+      "severity_expect": ["Medium", "High"],
+      "_severity_reason": "含 4+ 个代码块标记或 token > 400，至少 Medium；若代码块 >= 3 个完整块则 High",
+      "has_credentials": false,
+      "token_min": 300,
+      "token_max": 700,
+      "redundant_sections": [
+        "群聊行为规范",
+        "表情回应规则",
+        "语音消息格式化",
+        "心跳 vs 定时任务",
+        "记忆维护规则",
+        "BOOTSTRAP 节"
+      ],
+      "_redundant_note": "Phase 1 审计报告应识别出上述 6 个冗余块，类型为「场景无关」或「跨文件重复」"
+    },
+    {
+      "file": "tests/mock_MEMORY.md",
+      "exists": true,
+      "severity_expect": ["Low", "Medium"],
+      "_severity_reason": "行数 < 200，无大量代码块，预期 Low 或 Medium（含表格）",
+      "has_credentials": false,
+      "token_min": 200,
+      "token_max": 600,
+      "redundant_sections": [
+        "报告生成设计准则",
+        "SKILL.md 行数规范",
+        "OKR 2026 Q1",
+        "词汇表 / 术语对照"
+      ],
+      "_redundant_note": "前两项应识别为「单一职责违反（行为规范混入记忆）」，后两项应识别为「视角六冷存储候选」"
+    },
+    {
+      "file": "tests/mock_TOOLS.md",
+      "exists": true,
+      "severity_expect": ["Medium", "High"],
+      "_severity_reason": "含大量内联规范，token 数预期较高",
+      "has_credentials": true,
+      "_credential_note": "应检测到真实凭据行（MOCK_TOKEN_abc123xyz / SSO token 路径等），file_key 等说明性文字应被过滤到 noise",
+      "credential_lines_min": 4,
+      "credential_lines_noise_max": 2,
+      "token_min": 400,
+      "token_max": 900,
+      "redundant_sections": [
+        "数据库平台 API 调用规范",
+        "消息服务发送规范",
+        "CDN 上传规范",
+        "文档平台创建规范"
+      ],
+      "_redundant_note": "4 个 Skill 专属规范块应识别为「按需加载检查（视角二）」，建议移到各自 SKILL.md"
+    },
+    {
+      "file": "tests/mock_SOUL.md",
+      "exists": true,
+      "severity_expect": ["Low", "Medium"],
+      "has_credentials": false,
+      "token_min": 150,
+      "token_max": 500,
+      "redundant_sections": [
+        "什么是真正的帮助",
+        "为什么要有话直说",
+        "为什么要三思而后行"
+      ],
+      "_redundant_note": "3 个「为什么」解释块应识别为「冗余表述（视角四）」，AI 只需要「是什么」"
+    },
+    {
+      "file": "tests/mock_BOOTSTRAP.md",
+      "exists": true,
+      "severity_expect": ["Low", "Medium"],
+      "has_credentials": false,
+      "token_min": 80,
+      "token_max": 300,
+      "redundant_sections": ["整个文件"],
+      "_redundant_note": "视角五：使命已完成（IDENTITY.md/SOUL.md/USER.md 均已建立），应建议整体删除"
+    }
+  ],
+  "summary": {
+    "total_files_expect": 5,
+    "files_with_credentials_expect": 1,
+    "high_severity_files_min": 0,
+    "medium_or_high_severity_files_min": 2,
+    "_note": "至少 2 个文件应为 Medium 或 High severity"
+  }
+}
